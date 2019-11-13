@@ -2,7 +2,7 @@ import options, os, osproc, strutils, net
 import optionsutils
 
 type
-  MacAddr = distinct string
+  MacAddr* = distinct string
 
 proc `$`*(x: MacAddr): string {.borrow.}
 
