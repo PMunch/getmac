@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.0"
+version       = "0.1.1"
 author        = "PMunch"
 description   = "A package to get the MAC address of a local IP address"
 license       = "MIT"

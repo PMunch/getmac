@@ -51,6 +51,12 @@ proc verifyMac*(mac: string): Option[MacAddr] =
 
 const PingPort = some(Port(55555))
 
+template checkArpPlatform(ip: string): untyped =
+  when hostOS == "windows":
+    checkArp(ip)
+  else:
+    optOr(checkArpFile(ip), checkIpNeighShow(ip), checkArp(ip))
+
 proc getmac*(ip: string, ping = none(Port), pingDelay = 1): Option[MacAddr] =
   ## This procedure takes an IP address and polls the machine ARP cache in a
   ## platform independent way. If a ``Port`` is supplied to ``ping`` it will
@@ -69,11 +75,7 @@ proc getmac*(ip: string, ping = none(Port), pingDelay = 1): Option[MacAddr] =
       socket.close()
       sleep(pingDelay)
     none: discard
-  (when hostOS == "windows":
-    checkArp(ip)
-  else:
-    optOr(checkArpFile(ip), checkIpNeighShow(ip), checkArp(ip))
-  )?.verifyMac
+  checkArpPlatform(ip)?.verifyMac
 
 proc toBytes*(mac: MacAddr): array[6, byte] =
   ## Converts a MAC address string to an array of bytes.
